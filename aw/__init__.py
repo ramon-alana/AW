@@ -1,0 +1,1 @@
+"""Affective Windows minimal reproduction."""

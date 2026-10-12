@@ -1,0 +1,94 @@
+{
+  "model": {
+    "id": "Qwen/Qwen2.5-Omni-7B",
+    "path": "models/Qwen2.5-Omni-7B",
+    "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+    "dtype": "bfloat16",
+    "attention": "eager",
+    "layers": 28,
+    "hidden_size": 3584,
+    "max_image_pixels": 200704
+  },
+  "directions": {
+    "emotions": [
+      "joy",
+      "sadness"
+    ],
+    "paired_image_conditions": true,
+    "remove_pcs": 2,
+    "pooling": "all_valid_prefill_tokens",
+    "neutral": "neutral",
+    "epsilon": 1e-08
+  },
+  "probe": {
+    "labels": "original_eight_image_emotions",
+    "folds": 5,
+    "C": 1.0,
+    "max_iter": 2000,
+    "preprocess": "train_only_standard_scaler",
+    "natural_image_prompt_only": true
+  },
+  "steering": {
+    "alpha": 0.12,
+    "window_width": 4,
+    "token_scope": "last_prefill_token_and_all_decode_steps",
+    "main_budget": "per_layer",
+    "budget_control": "sum_relative_l2",
+    "random_seed": 42
+  },
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 0,
+    "max_new_tokens": 80,
+    "do_sample": true,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "deterministic_algorithms": true
+  },
+  "prompts": {
+    "system": "You are a helpful assistant that describes visible image content accurately.",
+    "base": "Describe the visible image in two or three sentences. Keep people, objects, actions and setting consistent with the image. Do not infer hidden events.",
+    "condition": "Use a {emotion} narrative tone while preserving the visible people, objects, actions and setting.",
+    "anchor": "List only clearly visible people, objects, actions and setting as short factual phrases. Avoid emotional interpretations, motives, and unseen events.",
+    "anchor_prefix": "Content notes (may contain errors; trust the image if they conflict): {anchor}"
+  },
+  "model_key": "qwen",
+  "seed": 42,
+  "selection": {
+    "width": 4,
+    "seed": 42,
+    "rule": "maximum_mean_single_layer_gain",
+    "tie": "lowest_start",
+    "degeneration_filter": false
+  },
+  "data": {
+    "manifest": "data/manifest.jsonl",
+    "expected_counts": {
+      "development": 64,
+      "validation": 24,
+      "test": 2000
+    },
+    "labels": [
+      "amusement",
+      "anger",
+      "awe",
+      "contentment",
+      "disgust",
+      "excitement",
+      "fear",
+      "sadness"
+    ],
+    "near_duplicate_hamming": 4
+  },
+  "evaluation": {
+    "emotion_model": "j-hartmann/emotion-english-distilroberta-base",
+    "emotion_path": "models/emotion-english-distilroberta-base",
+    "bootstrap": 10000,
+    "confidence": 0.95
+  },
+  "output": "runs/qwen"
+}
